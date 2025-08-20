@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advice Generator</title>
+</head>
+<body>
+    <link rel="stylesheet" href="style.css">
+
+  <div class="container">
+    <h1>Advice Generator</h1>
+    <p id="adviceText">Click the button to get advice!</p>
+    <button id="adviceBtn">Get Advice</button>
+  </div>
+
+  <script>
+    const btn = document.getElementById("adviceBtn");
+    const text = document.getElementById("adviceText");
+
+  
+    function typeEffect(element, message) {
+      element.innerText = "";
+      let i = 0;
+      const interval = setInterval(() => {
+        element.innerText += message[i];
+        i++;
+        if(i >= message.length) clearInterval(interval);
+      }, 25);
+    }
+
+    btn.addEventListener("click", async () => {
+      text.style.opacity = 0;
+      text.innerText = "Loading...";
+      await new Promise(r => setTimeout(r, 200));
+
+      fetch("https://api.adviceslip.com/advice")
+        .then(res => res.json())
+        .then(data => {
+          typeEffect(text, data.slip.advice);
+          text.classList.add("showAdvice");
+        })
+        .catch(err => {
+          typeEffect(text, "Something went wrong!");
+          text.classList.add("showAdvice");
+        });
+    });
+  </script>
+</body>
+
+
+
+</html>
